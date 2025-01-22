@@ -17,4 +17,10 @@ router.post("/refreshtoken", ctrls.refreshAccessToken);
 //LOG OUT
 router.get("/logout", ctrls.logout);
 
+//FORGOT PASSWORD
+router.get("/forgotpassword", ctrls.forgotPassword);
+
+//RESET PASSWORD
+router.put("/resetpassword", ctrls.resetPassword);
+
 module.exports = router;

@@ -4,6 +4,8 @@ const {
   generateRefreshToken,
 } = require("../middlewares/jwt");
 const jwt = require("jsonwebtoken");
+const sendMail = require("../utils/sendMail");
+const crypto = require("crypto");
 
 //REGISTER
 const register = async (req, res) => {
@@ -207,13 +209,63 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    // const resetToken
+    const resetToken = user.createPasswordChangeToken();
+    await user.save();
+
+    //
+    const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn. Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here</a>`;
+
+    const data = {
+      email,
+      html,
+    };
+
+    const rs = await sendMail(data);
+    return res.status(200).json({ success: true, rs });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Something went wrong",
     });
   }
+};
+
+//RESET PASSWORD
+const resetPassword = async (req, res) => {
+  const { password, token } = req.body;
+
+  if (!password || !token) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing inputs",
+    });
+  }
+
+  const passwordResetToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+  const user = await User.findOne({
+    passwordResetToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid reset token",
+    });
+  }
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordChangedAt = Date.now();
+  user.passwordResetExpires = undefined;
+  await user.save();
+  return res.status(200).json({
+    success: user ? true : false,
+    message: user
+      ? "Updated password successfully!"
+      : "Updated password failed!",
+  });
 };
 
 module.exports = {
@@ -223,4 +275,5 @@ module.exports = {
   refreshAccessToken,
   logout,
   forgotPassword,
+  resetPassword,
 };
