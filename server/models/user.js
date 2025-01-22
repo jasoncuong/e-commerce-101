@@ -66,6 +66,7 @@ var userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+//Hash Password
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     next();
@@ -73,5 +74,15 @@ userSchema.pre("save", async function (next) {
   const salt = bcrypt.genSaltSync(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
+
+//So sanh mat khau xem co dung 0
+// userSchema.methods.isCorrectPassword = () => {};
+userSchema.methods = {
+  isCorrectPassword: async function (password) {
+    return await bcrypt.compare(password, this.password);
+  },
+
+  // createPasswordChangeToken: function () {},
+};
 
 module.exports = mongoose.model("User", userSchema);
