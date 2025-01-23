@@ -55,15 +55,15 @@ const login = async (req, res) => {
 
     if (response && isCorrectPassword) {
       // Tách password và role ra khỏi response
-      const { password, role, ...userData } = response.toObject();
+      const { password, role, refreshToken, ...userData } = response.toObject();
       // Tạo accessToken (Xác thực ng dùng, phân quyền ng dùng)
       const accessToken = generateAccessToken(response._id, role);
       // Tạo refreshToken (Cấp mới accessToken)
-      const refreshToken = generateRefreshToken(response._id);
+      const newRefreshToken = generateRefreshToken(response._id);
       // Lưu refreshToken vào DB
       await User.findByIdAndUpdate(
         response._id,
-        { refreshToken: refreshToken },
+        { refreshToken: newRefreshToken },
         { new: true }
       );
       // Lưu refreshToken vào Cookies
@@ -99,9 +99,25 @@ const getCurrent = async (req, res) => {
     const user = await User.findById(_id).select(
       "-refreshToken -password -role"
     );
+    return res.status(200).json({
+      success: user ? true : false,
+      result: user ? user : "User not found",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+//GET ALL USER
+const getUsers = async (req, res) => {
+  try {
+    const response = await User.find().select("-refreshToken -password -role");
     return res
       .status(200)
-      .json({ success: true, result: user ? user : "User not found" });
+      .json({ success: response ? true : false, users: response });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -232,48 +248,132 @@ const forgotPassword = async (req, res) => {
 
 //RESET PASSWORD
 const resetPassword = async (req, res) => {
-  const { password, token } = req.body;
+  try {
+    const { password, token } = req.body;
 
-  if (!password || !token) {
-    return res.status(400).json({
+    if (!password || !token) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing inputs",
+      });
+    }
+
+    const passwordResetToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+    const user = await User.findOne({
+      passwordResetToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid reset token",
+      });
+    }
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordChangedAt = Date.now();
+    user.passwordResetExpires = undefined;
+    await user.save();
+    return res.status(200).json({
+      success: user ? true : false,
+      message: user
+        ? "Updated password successfully!"
+        : "Updated password failed!",
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      message: "Missing inputs",
+      message: "Something went wrong",
     });
   }
+};
 
-  const passwordResetToken = crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex");
-  const user = await User.findOne({
-    passwordResetToken,
-    passwordResetExpires: { $gt: Date.now() },
-  });
-  if (!user) {
-    return res.status(400).json({
+//DELETE USER
+const deleteUser = async (req, res) => {
+  try {
+    const { _id } = req.query;
+
+    if (!_id) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Missing inputs" });
+    }
+    const response = await User.findByIdAndDelete(_id);
+    return res.status(200).json({
+      success: response ? true : false,
+      deletedUser: response
+        ? `User with email ${response.email} deleted`
+        : `No user deleted`,
+    });
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      message: "Invalid reset token",
+      message: "Something went wrong",
     });
   }
-  user.password = password;
-  user.passwordResetToken = undefined;
-  user.passwordChangedAt = Date.now();
-  user.passwordResetExpires = undefined;
-  await user.save();
-  return res.status(200).json({
-    success: user ? true : false,
-    message: user
-      ? "Updated password successfully!"
-      : "Updated password failed!",
-  });
+};
+
+//UPDATE USER
+const updateUser = async (req, res) => {
+  try {
+    const { _id } = req.user;
+    if (!_id || Object.keys(req.body).length === 0) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Missing inputs" });
+    }
+    const response = await User.findByIdAndUpdate(_id, req.body, {
+      new: true,
+    }).select("-password -role -refreshToken");
+    return res.status(200).json({
+      success: response ? true : false,
+      updatedUser: response ? response : "Updated failed!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+//UPDATE USER BY ADMIN
+const updateUserByAdmin = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    if (Object.keys(req.body).length === 0) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Missing inputs" });
+    }
+    const response = await User.findByIdAndUpdate(uid, req.body, {
+      new: true,
+    }).select("-password -role -refreshToken");
+    return res.status(200).json({
+      success: response ? true : false,
+      updatedUser: response ? response : "Updated failed!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
 };
 
 module.exports = {
   register,
   login,
   getCurrent,
+  getUsers,
   refreshAccessToken,
   logout,
   forgotPassword,
   resetPassword,
+  deleteUser,
+  updateUser,
+  updateUserByAdmin,
 };
