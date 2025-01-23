@@ -76,9 +76,20 @@ const getProducts = async (req, res) => {
       queryCommand = queryCommand.sort(sortBy);
     }
 
-    //Fields limit
+    //Fields limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      queryCommand = queryCommand.select(fields);
+    }
 
     //Pagination
+    //limit: số object lấy về 1 lần gọi API
+    //skip
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCT;
+    const skip = (page - 1) * limit;
+
+    queryCommand = queryCommand.skip(skip).limit(limit);
 
     //Execute query
     //Số lượng sp thỏa mãn diều kiện !== số lượng sp trả về 1 lần gọi API
@@ -88,8 +99,8 @@ const getProducts = async (req, res) => {
 
         return res.status(200).json({
           success: response ? true : false,
-          products: response ? response : "Cannot get products",
           counts,
+          products: response ? response : "Cannot get products",
         });
       })
       .catch((err) => {
@@ -138,7 +149,56 @@ const deleteProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
+    });
+  }
+};
+
+//RATINGS
+const ratings = async (req, res) => {
+  try {
+    const { _id } = req.user;
+    const { star, comment, pid } = req.body;
+    if (!star || !pid) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Missing inputs" });
+    }
+    //Tìm xem ng dùng đã rating hay chưa
+    const ratingProduct = await Product.findById(pid);
+    const alreadyRating = ratingProduct?.ratings?.find(
+      (item) => item.postedBy.toString() === _id
+    );
+
+    if (alreadyRating) {
+      //Update star & comment
+      await Product.updateOne(
+        {
+          ratings: { $elemMatch: alreadyRating },
+        },
+        {
+          $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+        },
+        { new: true }
+      );
+    } else {
+      //Add star & comment
+      const response = await Product.findByIdAndUpdate(
+        pid,
+        {
+          $push: { ratings: { star, comment, postedBy: _id } },
+        },
+        { new: true }
+      );
+    }
+
+    //Sum ratings
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
@@ -149,4 +209,5 @@ module.exports = {
   getProducts,
   updateProduct,
   deleteProduct,
+  ratings,
 };
