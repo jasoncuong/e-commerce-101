@@ -3,6 +3,13 @@ const BlogCategory = require("../models/blogCategory");
 //CREATE BLOG CATEGORY
 const createBlogCategory = async (req, res) => {
   try {
+    const { title } = req.body;
+    if (!title) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Missing inputs" });
+    }
+
     const response = await BlogCategory.create(req.body);
 
     return res.status(200).json({
