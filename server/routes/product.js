@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const ctrls = require("../controllers/product");
 const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
+const uploader = require("../config/cloudinary.config");
 
 //CREATE PRODUCT
 router.post("/", [verifyAccessToken, isAdmin], ctrls.createProduct);
@@ -10,6 +11,14 @@ router.get("/", ctrls.getProducts);
 
 //RATINGS
 router.put("/ratings", verifyAccessToken, ctrls.ratings);
+
+//UPDATE IMAGES
+router.put(
+  "/uploadimage/:pid",
+  [verifyAccessToken, isAdmin],
+  uploader.single("images"),
+  ctrls.upLoadImagesProduct
+);
 
 //UPDATE PRODUCT
 router.put("/:pid", [verifyAccessToken, isAdmin], ctrls.updateProduct);

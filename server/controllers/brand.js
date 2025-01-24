@@ -39,6 +39,12 @@ const getBrand = async (req, res) => {
 const updateBrand = async (req, res) => {
   try {
     const { bid } = req.params;
+    if (Object.keys(req.body).length === 0) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Missing inputs" });
+    }
+
     const response = await Brand.findByIdAndUpdate(bid, req.body, {
       new: true,
     });

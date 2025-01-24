@@ -213,6 +213,15 @@ const ratings = async (req, res) => {
   }
 };
 
+//Upload Images with Cloundinary
+const upLoadImagesProduct = async (req, res) => {
+  try {
+    return res.status(200).json("Oke");
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   createProduct,
   getProduct,
@@ -220,4 +229,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   ratings,
+  upLoadImagesProduct,
 };
