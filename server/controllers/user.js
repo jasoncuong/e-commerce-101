@@ -35,7 +35,7 @@ const register = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -87,7 +87,7 @@ const login = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Invalid email and/or password",
+      message: error.message,
     });
   }
 };
@@ -106,7 +106,7 @@ const getCurrent = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -121,7 +121,7 @@ const getUsers = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -163,7 +163,7 @@ const refreshAccessToken = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -195,7 +195,7 @@ const logout = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -241,7 +241,7 @@ const forgotPassword = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -286,7 +286,7 @@ const resetPassword = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -311,7 +311,7 @@ const deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -335,7 +335,7 @@ const updateUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -359,7 +359,7 @@ const updateUserByAdmin = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };

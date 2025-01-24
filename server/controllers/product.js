@@ -23,7 +23,7 @@ const createProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -41,7 +41,7 @@ const getProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -109,7 +109,7 @@ const getProducts = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -131,7 +131,7 @@ const updateProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: error.message,
     });
   }
 };
@@ -183,7 +183,7 @@ const ratings = async (req, res) => {
       );
     } else {
       //Add star & comment
-      const response = await Product.findByIdAndUpdate(
+      await Product.findByIdAndUpdate(
         pid,
         {
           $push: { ratings: { star, comment, postedBy: _id } },
@@ -193,8 +193,18 @@ const ratings = async (req, res) => {
     }
 
     //Sum ratings
+    const updatedProduct = await Product.findById(pid);
+    const ratingCount = updatedProduct.ratings.length;
+    const sumRatings = updatedProduct.ratings.reduce(
+      (sum, item) => sum + +item.star,
+      0
+    );
+    updatedProduct.totalRatings =
+      Math.round((sumRatings * 10) / ratingCount) / 10;
 
-    return res.status(200).json({ success: true });
+    await updatedProduct.save();
+
+    return res.status(200).json({ success: true, updatedProduct });
   } catch (error) {
     res.status(500).json({
       success: false,

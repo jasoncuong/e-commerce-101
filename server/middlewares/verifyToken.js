@@ -19,9 +19,7 @@ const verifyAccessToken = async (req, res, next) => {
         .json({ success: false, message: "Require authentication!" });
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Something went wrong" });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -35,9 +33,7 @@ const isAdmin = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Something went wrong" });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
