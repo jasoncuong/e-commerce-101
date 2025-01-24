@@ -180,10 +180,45 @@ const dislikeBlog = async (req, res) => {
   }
 };
 
+//GET BLOG
+const getBlog = async (req, res) => {
+  try {
+    const { bid } = req.params;
+    const blog = await Blog.findByIdAndUpdate(
+      bid,
+      { $inc: { numberViews: 1 } },
+      { new: true }
+    )
+      .populate("likes", "firstname lastname")
+      .populate("dislikes", "firstname lastname");
+
+    return res.status(200).json({ success: blog ? true : false, result: blog });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+//DELETE BLOG
+const deleteBlog = async (req, res) => {
+  try {
+    const { bid } = req.params;
+    const blog = await Blog.findByIdAndDelete(bid);
+
+    return res.status(200).json({
+      success: blog ? true : false,
+      result: blog ? blog : "Deleted failed!",
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   createNewBlog,
   updateBlog,
   getAllBlogs,
   likeBlog,
   dislikeBlog,
+  getBlog,
+  deleteBlog,
 };

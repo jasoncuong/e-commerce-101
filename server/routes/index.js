@@ -3,7 +3,7 @@ const productRouter = require("./product");
 const productCategoryRouter = require("./productCategory");
 const blogCategoryRouter = require("./blogCategory");
 const blogRouter = require("./blog");
-// const { notFound, errHandler } = require("../middlewares/errorHandler");
+const brandRouter = require("./brand");
 
 const initRoutes = (app) => {
   app.use("/api/user", userRouter);
@@ -11,10 +11,7 @@ const initRoutes = (app) => {
   app.use("/api/productcategory", productCategoryRouter);
   app.use("/api/blogcategory", blogCategoryRouter);
   app.use("/api/blog", blogRouter);
-
-  //Xu ly loi
-  // app.use(notFound);
-  // app.use(errHandler);
+  app.use("/api/brand", brandRouter);
 };
 
 module.exports = initRoutes;
