@@ -216,7 +216,25 @@ const ratings = async (req, res) => {
 //Upload Images with Cloundinary
 const upLoadImagesProduct = async (req, res) => {
   try {
-    return res.status(200).json("Oke");
+    const { pid } = req.params;
+    if (!req.files) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Missing inputs" });
+    }
+
+    const response = await Product.findByIdAndUpdate(
+      pid,
+      {
+        $push: { images: { $each: req.files.map((item) => item.path) } },
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: response ? true : false,
+      updatedProduct: response ? response : "Cannot upload images product",
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

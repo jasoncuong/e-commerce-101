@@ -213,6 +213,33 @@ const deleteBlog = async (req, res) => {
   }
 };
 
+//Upload Images with Cloundinary
+const upLoadImagesBlog = async (req, res) => {
+  try {
+    const { bid } = req.params;
+    if (!req.file) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Missing inputs" });
+    }
+
+    const response = await Blog.findByIdAndUpdate(
+      bid,
+      {
+        images: req.file.path,
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: response ? true : false,
+      updatedBlog: response ? response : "Cannot upload images blog",
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   createNewBlog,
   updateBlog,
@@ -221,4 +248,5 @@ module.exports = {
   dislikeBlog,
   getBlog,
   deleteBlog,
+  upLoadImagesBlog,
 };

@@ -1,12 +1,21 @@
 const router = require("express").Router();
 const ctrls = require("../controllers/blog");
 const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
+const uploader = require("../config/cloudinary.config");
 
 //CREATE NEW BLOG
 router.post("/", [verifyAccessToken, isAdmin], ctrls.createNewBlog);
 
 //GET ALL BLOG
 router.get("/", ctrls.getAllBlogs);
+
+//UPDATE IMAGES
+router.put(
+  "/uploadimage/:bid",
+  [verifyAccessToken, isAdmin],
+  uploader.single("image"),
+  ctrls.upLoadImagesBlog
+);
 
 //GET BLOG
 router.get("/one/:bid", ctrls.getBlog);

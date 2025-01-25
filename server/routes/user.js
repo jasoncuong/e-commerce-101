@@ -32,6 +32,12 @@ router.delete("/", [verifyAccessToken, isAdmin], ctrls.deleteUser);
 //UPDATE USER
 router.put("/current", verifyAccessToken, ctrls.updateUser);
 
+//UPDATE USER ADDRESS
+router.put("/address", [verifyAccessToken], ctrls.updateUserAddress);
+
+//ADD TO CART
+router.put("/cart", [verifyAccessToken], ctrls.updateCart);
+
 //UPDATE USER BY ADMIN
 router.put("/:uid", [verifyAccessToken, isAdmin], ctrls.updateUser);
 
