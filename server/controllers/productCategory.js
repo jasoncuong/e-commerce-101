@@ -1,8 +1,12 @@
 const ProductCategory = require("../models/productCategory");
+const slugify = require("slugify");
 
 //CREATE CATEGORY
 const createCategory = async (req, res) => {
   try {
+    if (req.body && req.body.title) {
+      req.body.slug = slugify(req.body.title);
+    }
     const response = await ProductCategory.create(req.body);
 
     return res.status(200).json({
