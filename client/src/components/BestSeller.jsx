@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import { Product } from "./";
 
 var settings = {
-  dots: false,
+  dots: true,
   infinite: false,
   speed: 500,
   slidesToShow: 3,
@@ -20,16 +20,13 @@ const tabs = [
     id: 2,
     name: "New Arrivals",
   },
-  {
-    id: 3,
-    name: "New",
-  },
 ];
 
 const BestSeller = () => {
   const [bestSellers, setBestSellers] = useState(null);
   const [newProducts, setNewProducts] = useState(null);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(1);
+  const [products, setProducts] = useState(null);
 
   const fetchProducts = async () => {
     const response = await Promise.all([
@@ -38,6 +35,7 @@ const BestSeller = () => {
     ]);
     if (response[0]?.success) {
       setBestSellers(response[0].products);
+      setProducts(response[0].products);
     }
     if (response[1]?.success) {
       setNewProducts(response[1].products);
@@ -48,23 +46,36 @@ const BestSeller = () => {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    if (activeTab === 1) {
+      setProducts(bestSellers);
+    }
+    if (activeTab === 2) {
+      setProducts(newProducts);
+    }
+  }, [activeTab]);
+
   return (
     <div>
-      <div className="flex gap-8 border-b-2 border-main pb-4 text-[20px]">
+      <div className="mx-[-32px] flex text-[20px]">
         {tabs.map((el) => (
           <span
             key={el.id}
-            className={`cursor-pointer border-r font-semibold capitalize text-gray-400 ${activeTab === el.id ? "text-main" : ""}`}
+            className={`cursor-pointer border-r px-8 font-semibold capitalize text-gray-400 ${activeTab === el.id ? "text-main" : ""}`}
             onClick={() => setActiveTab(el.id)}
           >
             {el.name}
           </span>
         ))}
       </div>
-      <div className="mt-4">
+      <div className="mx-[-10px] mt-4 border-t-2 border-main pt-4">
         <Slider {...settings}>
-          {bestSellers?.map((el) => (
-            <Product key={el._id} productData={el} />
+          {products?.map((el) => (
+            <Product
+              key={el._id}
+              productData={el}
+              isNew={activeTab === 1 ? false : true}
+            />
           ))}
         </Slider>
       </div>

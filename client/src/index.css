@@ -22,7 +22,7 @@ button.slick-prev {
 button.slick-next::before {
   color: gray;
   content: "\276F";
-  background-color: #eee;
+  background-color: #ffd4d4;
   width: 80px;
   height: 80px;
   font-size: 30px;
@@ -34,7 +34,7 @@ button.slick-next::before {
 button.slick-prev::before {
   color: gray;
   content: "\276E";
-  background-color: #eee;
+  background-color: #ffd4d4;
   width: 80px;
   height: 80px;
   font-size: 30px;
