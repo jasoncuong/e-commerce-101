@@ -33,6 +33,14 @@ const data = [
     ],
   },
   {
+    cate: "Speaker",
+    brand: [],
+  },
+  {
+    cate: "Camera",
+    brand: [],
+  },
+  {
     cate: "Accessories",
     brand: [
       "Accessories_1",

@@ -16,6 +16,7 @@ const fn = async (product) => {
     sold: Math.round(Math.random() * 100),
     images: product?.images,
     color: product?.variants?.find((el) => el.label === "Color")?.variants[0],
+    thumb: product?.thumb,
   });
 };
 
@@ -39,6 +40,7 @@ const fn2 = async (cate) => {
   await ProductCategory.create({
     title: cate?.cate,
     brand: cate?.brand,
+    slug: slugify(cate?.cate) + Math.round(Math.random() * 100) + "",
   });
 };
 
