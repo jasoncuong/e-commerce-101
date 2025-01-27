@@ -6,9 +6,8 @@ import { useSelector } from "react-redux";
 
 const Sidebar = () => {
   const { categories } = useSelector((state) => state.appReducer);
-  console.log(categories);
 
-  // const [category, setCategory] = useState(null);
+  // const [categories, setCategories] = useState(null);
   // const fetchCategory = async () => {
   //   const response = await apiGetCategories();
 

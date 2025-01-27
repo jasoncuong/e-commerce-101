@@ -10,7 +10,6 @@ const DBConnect = async () => {
     }
   } catch (error) {
     console.log("DB connection is failed");
-    throw new Error(error);
   }
 };
 
