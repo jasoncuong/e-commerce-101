@@ -17,6 +17,7 @@ const fn = async (product) => {
     images: product?.images,
     color: product?.variants?.find((el) => el.label === "Color")?.variants[0],
     thumb: product?.thumb,
+    totalRatings: Math.round(Math.random() * 5),
   });
 };
 
@@ -25,7 +26,6 @@ const insertProduct = async (req, res) => {
   try {
     const promises = [];
 
-    console.log(data2.variants);
     for (let prod of data2) {
       promises.push(fn(prod));
     }
@@ -48,8 +48,6 @@ const fn2 = async (cate) => {
 const insertCategory = async (req, res) => {
   try {
     const promises = [];
-
-    console.log(categoryData);
 
     for (let cate of categoryData) {
       promises.push(fn2(cate));

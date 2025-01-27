@@ -1,19 +1,42 @@
 import { formatMoney } from "../utils/helpers";
 import label from "../assets/label.png";
 import labelblue from "../assets/labelblue.png";
+import { renderStarFromNumber } from "../utils/helpers";
+import { SelectOption } from "./";
+import icons from "../utils/icon";
+import { useState } from "react";
+
+const { FaHeart, AiOutlineMenu, FaEye } = icons;
 
 const Product = ({ productData, isNew }) => {
+  const [isShowOption, setIsShowOption] = useState(false);
   return (
     <div className="w-full px-[10px] text-base">
-      <div className="flex w-full flex-col items-center border p-[15px]">
+      <div
+        className="flex w-full cursor-pointer flex-col items-center border p-[15px]"
+        onMouseEnter={(e) => {
+          e.stopPropagation(), setIsShowOption(true);
+        }}
+        onMouseLeave={(e) => {
+          e.stopPropagation(), setIsShowOption(false);
+        }}
+      >
         <div className="relative w-full">
+          {isShowOption && (
+            <div className="animate-slide-top absolute bottom-0 left-0 right-0 flex justify-center gap-2">
+              <SelectOption icon={<FaHeart />} />
+              <SelectOption icon={<AiOutlineMenu />} />
+              <SelectOption icon={<FaEye />} />
+            </div>
+          )}
+
           <img
             src={
               productData?.thumb ||
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTFlhSWwrzGBZnqDlW7uLEEJWBhFc8sW_Ruw&s"
             }
             alt=""
-            className="h-[243px] w-[243px] object-cover"
+            className="h-[274px] w-[274px] object-cover"
           />
           <img
             src={isNew ? label : labelblue}
@@ -28,6 +51,9 @@ const Product = ({ productData, isNew }) => {
           </span>
         </div>
         <div className="mt-[15px] flex w-full flex-col items-start gap-1">
+          <span className="flex h-4">
+            {renderStarFromNumber(productData?.totalRatings)}
+          </span>
           <span className="line-clamp-1">{productData?.title}</span>
           <span>{`${formatMoney(productData?.price)} VND`}</span>
         </div>
