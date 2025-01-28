@@ -4,6 +4,8 @@ import label from "../assets/label.png";
 import labelblue from "../assets/labelblue.png";
 import { SelectOption } from "./";
 import icons from "../utils/icon";
+import { Link } from "react-router-dom";
+import path from "../utils/path";
 
 const { FaHeart, AiOutlineMenu, FaEye } = icons;
 
@@ -11,7 +13,8 @@ const Product = ({ productData, isNew }) => {
   const [isShowOption, setIsShowOption] = useState(false);
   return (
     <div className="w-full px-[10px] text-base">
-      <div
+      <Link
+        to={`/${path.DETAIL_PRODUCT}/${productData._id}/${productData.title}`}
         className="flex w-full cursor-pointer flex-col items-center border p-[15px]"
         onMouseEnter={(e) => {
           e.stopPropagation(), setIsShowOption(true);
@@ -60,7 +63,7 @@ const Product = ({ productData, isNew }) => {
           <span className="line-clamp-1">{productData?.title}</span>
           <span>{`${formatMoney(productData?.price)} VND`}</span>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

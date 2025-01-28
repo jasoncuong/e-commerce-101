@@ -16,8 +16,6 @@ const Home = () => {
   const { newProducts } = useSelector((state) => state.products);
   const { categories } = useSelector((state) => state.app);
 
-  console.log(categories);
-
   return (
     <>
       <div className="flex w-main">
@@ -64,9 +62,12 @@ const Home = () => {
                     <h4 className="font-semibold uppercase">{el.title}</h4>
                     <ul className="text-sm">
                       {el?.brand.map((item, index) => (
-                        <span className="flex cursor-pointer items-center gap-1 text-gray-500 hover:text-main">
+                        <span
+                          key={index}
+                          className="flex cursor-pointer items-center gap-1 text-gray-500 hover:text-main"
+                        >
                           <IoIosArrowForward size={14} />
-                          <li key={index}>{item}</li>
+                          <li>{item}</li>
                         </span>
                       ))}
                     </ul>
@@ -82,7 +83,6 @@ const Home = () => {
           BLOG POSTS
         </h3>
       </div>
-      <div className="h-[500px] w-full bg-main">FOOTER</div>
     </>
   );
 };
