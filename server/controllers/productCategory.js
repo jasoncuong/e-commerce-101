@@ -23,7 +23,7 @@ const createCategory = async (req, res) => {
 //GET ALL CATEGORY
 const getCategories = async (req, res) => {
   try {
-    const response = await ProductCategory.find().select("title _id");
+    const response = await ProductCategory.find();
 
     return res.status(200).json({
       success: response ? true : false,

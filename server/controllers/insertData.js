@@ -41,6 +41,7 @@ const fn2 = async (cate) => {
     title: cate?.cate,
     brand: cate?.brand,
     slug: slugify(cate?.cate) + Math.round(Math.random() * 100) + "",
+    image: cate?.image,
   });
 };
 

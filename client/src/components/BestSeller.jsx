@@ -1,15 +1,8 @@
 import { useEffect, useState } from "react";
 import { apiGetProduct } from "../apis/product";
-import Slider from "react-slick";
-import { Product } from "./";
-
-var settings = {
-  dots: true,
-  infinite: false,
-  speed: 500,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-};
+import { CustomSlider } from "./";
+import { getNewProducts } from "../store/product/asyncActions";
+import { useDispatch, useSelector } from "react-redux";
 
 const tabs = [
   {
@@ -24,26 +17,22 @@ const tabs = [
 
 const BestSeller = () => {
   const [bestSellers, setBestSellers] = useState(null);
-  const [newProducts, setNewProducts] = useState(null);
   const [activeTab, setActiveTab] = useState(1);
   const [products, setProducts] = useState(null);
+  const dispatch = useDispatch();
+  const { newProducts } = useSelector((state) => state.products);
 
   const fetchProducts = async () => {
-    const response = await Promise.all([
-      apiGetProduct({ sort: "-sold" }),
-      apiGetProduct({ sort: "-createdAt" }),
-    ]);
-    if (response[0]?.success) {
-      setBestSellers(response[0].products);
-      setProducts(response[0].products);
-    }
-    if (response[1]?.success) {
-      setNewProducts(response[1].products);
+    const response = await apiGetProduct({ sort: "-sold" });
+    if (response?.success) {
+      setBestSellers(response.products);
+      setProducts(response.products);
     }
   };
 
   useEffect(() => {
     fetchProducts();
+    dispatch(getNewProducts());
   }, []);
 
   useEffect(() => {
@@ -69,15 +58,7 @@ const BestSeller = () => {
         ))}
       </div>
       <div className="mx-[-10px] mt-4 border-t-2 border-main pt-4">
-        <Slider {...settings}>
-          {products?.map((el) => (
-            <Product
-              key={el._id}
-              productData={el}
-              isNew={activeTab === 1 ? false : true}
-            />
-          ))}
-        </Slider>
+        <CustomSlider products={products} activeTab={activeTab} />
       </div>
       <div className="mt-8 flex w-full gap-4">
         <img

@@ -5,7 +5,7 @@ import { createSlug } from "../utils/helpers";
 import { useSelector } from "react-redux";
 
 const Sidebar = () => {
-  const { categories } = useSelector((state) => state.appReducer);
+  const { categories } = useSelector((state) => state.app);
 
   // const [categories, setCategories] = useState(null);
   // const fetchCategory = async () => {

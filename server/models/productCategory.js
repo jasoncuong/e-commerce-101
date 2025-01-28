@@ -18,6 +18,10 @@ var productCategorySchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
+    image: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

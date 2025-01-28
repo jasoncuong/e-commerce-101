@@ -25,9 +25,9 @@ const FeatureProduct = () => {
         FEATURED PRODUCTS
       </h3>
       <div className="mx-[-10px] mt-[15px] flex flex-wrap">
-        {product?.map((el) => (
+        {product?.map((el, index) => (
           <ProductCard
-            key={el.id}
+            key={index}
             image={el.thumb}
             title={el.title}
             totalRatings={el.totalRatings}
