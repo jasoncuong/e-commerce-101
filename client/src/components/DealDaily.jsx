@@ -22,7 +22,14 @@ const DealDaily = () => {
     });
     if (response.success) {
       setDealDaily(response.products[0]);
-      setHours(24);
+      const h = 24 - new Date().getHours();
+      const m = 59 - new Date().getMinutes();
+      const s = 59 - new Date().getSeconds();
+      setHours(h);
+      setMinutes(m);
+      setSeconds(s);
+    } else {
+      setHours(0);
       setMinutes(59);
       setSeconds(59);
     }
@@ -34,7 +41,6 @@ const DealDaily = () => {
 
   useEffect(() => {
     idInterval = setInterval(() => {
-      console.log("interval");
       if (seconds > 0) {
         setSeconds((pre) => pre - 1);
       } else if (minutes > 0) {
