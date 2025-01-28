@@ -1,4 +1,10 @@
-import { Sidebar, Banner, BestSeller, DealDaily } from "../../components";
+import {
+  Sidebar,
+  Banner,
+  BestSeller,
+  DealDaily,
+  FeatureProduct,
+} from "../../components";
 
 const Home = () => {
   return (
@@ -12,6 +18,9 @@ const Home = () => {
           <Banner />
           <BestSeller />
         </div>
+      </div>
+      <div className="my-8">
+        <FeatureProduct />
       </div>
       <div className="h-[500px] w-full"></div>
     </>
