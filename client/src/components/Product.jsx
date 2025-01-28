@@ -1,10 +1,9 @@
-import { formatMoney } from "../utils/helpers";
+import { useState } from "react";
+import { formatMoney, renderStarFromNumber } from "../utils/helpers";
 import label from "../assets/label.png";
 import labelblue from "../assets/labelblue.png";
-import { renderStarFromNumber } from "../utils/helpers";
 import { SelectOption } from "./";
 import icons from "../utils/icon";
-import { useState } from "react";
 
 const { FaHeart, AiOutlineMenu, FaEye } = icons;
 
@@ -23,7 +22,7 @@ const Product = ({ productData, isNew }) => {
       >
         <div className="relative w-full">
           {isShowOption && (
-            <div className="animate-slide-top absolute bottom-0 left-0 right-0 flex justify-center gap-2">
+            <div className="absolute bottom-0 left-0 right-0 flex animate-slide-top justify-center gap-2">
               <SelectOption icon={<FaHeart />} />
               <SelectOption icon={<AiOutlineMenu />} />
               <SelectOption icon={<FaEye />} />
