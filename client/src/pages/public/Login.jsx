@@ -1,18 +1,64 @@
 import { useCallback, useState } from "react";
 import { InputField, Button } from "../../components";
+import { apiRegister, apiLogin } from "../../apis";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import path from "../../utils/path";
+import { register } from "../../store/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [payload, setPayload] = useState({
     email: "",
     password: "",
-    name: "",
+    firstname: "",
+    lastname: "",
+    mobile: "",
   });
 
   const [isRegister, setIsRegister] = useState(false);
+  const resetPayload = () => {
+    setPayload({
+      email: "",
+      password: "",
+      firstname: "",
+      lastname: "",
+      mobile: "",
+    });
+  };
 
-  const handleSubmit = useCallback(() => {
-    console.log(payload);
-  }, [payload]);
+  const handleSubmit = useCallback(async () => {
+    const { firstname, lastname, mobile, ...data } = payload;
+    if (isRegister) {
+      const response = await apiRegister(payload);
+      if (response.success) {
+        Swal.fire("Congratulation!", response.message, "success").then(() => {
+          setIsRegister(false);
+          resetPayload();
+        });
+      } else {
+        Swal.fire("Oops!", response.message, "error");
+      }
+    } else {
+      const result = await apiLogin(data);
+      console.log(result);
+
+      if (result.success) {
+        dispatch(
+          register({
+            isLoggedIn: true,
+            token: result.accessToken,
+            userData: result.userData,
+          }),
+        );
+        navigate(`/${path.HOME}`);
+      } else {
+        Swal.fire("Oops!", result.message, "error");
+      }
+    }
+  }, [payload, isRegister]);
   return (
     <div className="relative h-screen w-screen">
       <img
@@ -26,11 +72,18 @@ const Login = () => {
             {isRegister ? "Register" : "Login"}
           </h1>
           {isRegister && (
-            <InputField
-              value={payload.name}
-              setValue={setPayload}
-              nameKey={"name"}
-            />
+            <div className="flex items-center gap-2">
+              <InputField
+                value={payload.firstname}
+                setValue={setPayload}
+                nameKey={"firstname"}
+              />
+              <InputField
+                value={payload.lastname}
+                setValue={setPayload}
+                nameKey={"lastname"}
+              />
+            </div>
           )}
 
           <InputField
@@ -38,6 +91,14 @@ const Login = () => {
             setValue={setPayload}
             nameKey={"email"}
           />
+          {isRegister && (
+            <InputField
+              value={payload.mobile}
+              setValue={setPayload}
+              nameKey={"mobile"}
+            />
+          )}
+
           <InputField
             value={payload.password}
             setValue={setPayload}

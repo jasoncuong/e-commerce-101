@@ -22,7 +22,7 @@ const register = async (req, res) => {
     if (user) {
       res.status(400).json({
         success: false,
-        message: "Email and/or Mobile already exist",
+        message: "User already exist",
       });
     } else {
       const newUser = await User.create(req.body);
@@ -51,9 +51,8 @@ const login = async (req, res) => {
     }
 
     const response = await User.findOne({ email: email });
-    const isCorrectPassword = await response.isCorrectPassword(password);
 
-    if (response && isCorrectPassword) {
+    if (response && (await response.isCorrectPassword(password))) {
       // Tách password và role ra khỏi response
       const { password, role, refreshToken, ...userData } = response.toObject();
       // Tạo accessToken (Xác thực ng dùng, phân quyền ng dùng)
