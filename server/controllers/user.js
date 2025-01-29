@@ -6,37 +6,102 @@ const {
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const crypto = require("crypto");
+const makeToken = require("uniqid");
 
 //REGISTER
+// const register = async (req, res) => {
+//   try {
+//     const { email, password, firstname, lastname } = req.body;
+
+//     if (!email || !password || !firstname || !lastname) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Missing inputs" });
+//     }
+
+//     const user = await User.findOne({ email: email });
+//     if (user) {
+//       res.status(400).json({
+//         success: false,
+//         message: "User already exist",
+//       });
+//     } else {
+//       const newUser = await User.create(req.body);
+//       return res.status(200).json({
+//         success: newUser ? true : false,
+//         message: newUser ? "Register Successfully!" : "Something went wrong",
+//         newUser,
+//       });
+//     }
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
 const register = async (req, res) => {
   try {
-    const { email, password, firstname, lastname } = req.body;
-
-    if (!email || !password || !firstname || !lastname) {
+    const { email, password, firstname, lastname, mobile } = req.body;
+    if (!email || !password || !firstname || !lastname || !mobile) {
       return res
-        .status(400)
+        .status(401)
         .json({ success: false, message: "Missing inputs" });
     }
 
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email });
     if (user) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "User already exist",
       });
     } else {
-      const newUser = await User.create(req.body);
+      const token = makeToken();
+      res.cookie(
+        "dataRegister",
+        { ...req.body, token },
+        {
+          httpOnly: true,
+          maxAge: 15 * 60 * 1000,
+        }
+      );
+      const html = `Xin vui lòng click vào link dưới đây để hoàn tất quá trình đăng ký. Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.URL_SERVER}/api/user/finalregister/${token}>Click here</a>`;
+      await sendMail({ email, html, subject: "Complete registration" });
       return res.status(200).json({
-        success: newUser ? true : false,
-        message: newUser ? "Register Successfully!" : "Something went wrong",
-        newUser,
+        success: true,
+        message: "Please check your email to active your account",
       });
     }
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+//Final Register (Xác thực email)
+const finalRegister = async (req, res) => {
+  try {
+    const cookie = req.cookies;
+    const { token } = req.params;
+    if (!cookie || cookie?.dataRegister?.token !== token) {
+      return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
+    }
+
+    const newUser = await User.create({
+      email: cookie?.dataRegister?.email,
+      password: cookie?.dataRegister?.password,
+      mobile: cookie?.dataRegister?.mobile,
+      firstname: cookie?.dataRegister?.firstname,
+      lastname: cookie?.dataRegister?.lastname,
     });
+
+    if (newUser) {
+      return res.redirect(`${process.env.CLIENT_URL}/finalregister/succeed`);
+    } else {
+      return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
+    }
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -65,8 +130,8 @@ const login = async (req, res) => {
         { refreshToken: newRefreshToken },
         { new: true }
       );
-      // Lưu refreshToken vào Cookies
 
+      // Lưu refreshToken vào Cookies
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -233,6 +298,7 @@ const forgotPassword = async (req, res) => {
     const data = {
       email,
       html,
+      subject: "Forgot password",
     };
 
     const rs = await sendMail(data);
@@ -464,4 +530,5 @@ module.exports = {
   updateUserByAdmin,
   updateUserAddress,
   updateCart,
+  finalRegister,
 };

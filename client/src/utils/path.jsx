@@ -9,6 +9,7 @@ const path = {
   FAQ: "faqs",
   DETAIL_PRODUCT__PID__TITLE: "product/:pid/:title",
   DETAIL_PRODUCT: "product",
+  FINAL_REGISTER: "finalregister/:status",
 };
 
 export default path;

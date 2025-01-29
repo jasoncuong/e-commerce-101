@@ -8,6 +8,7 @@ import {
   Blogs,
   FAQ,
   Products,
+  FinalRegister,
 } from "./pages/public";
 import path from "./utils/path";
 import { useEffect } from "react";
@@ -35,6 +36,7 @@ const App = () => {
           <Route path={path.PRODUCTS} element={<Products />} />
         </Route>
 
+        <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.LOGIN} element={<Login />} />
       </Routes>
     </div>
