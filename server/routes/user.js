@@ -24,7 +24,7 @@ router.post("/refreshtoken", ctrls.refreshAccessToken);
 router.get("/logout", ctrls.logout);
 
 //FORGOT PASSWORD
-router.get("/forgotpassword", ctrls.forgotPassword);
+router.post("/forgotpassword", ctrls.forgotPassword);
 
 //RESET PASSWORD
 router.put("/resetpassword", ctrls.resetPassword);

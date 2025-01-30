@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import { InputField, Button } from "../../components";
-import { apiRegister, apiLogin } from "../../apis";
+import { apiRegister, apiLogin, apiForgotPassword } from "../../apis";
 import Swal from "sweetalert2";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import path from "../../utils/path";
 import { register } from "../../store/user/userSlice";
 import { useDispatch } from "react-redux";
@@ -10,8 +10,6 @@ import { useDispatch } from "react-redux";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
-  console.log(location);
 
   const [payload, setPayload] = useState({
     email: "",
@@ -20,6 +18,8 @@ const Login = () => {
     lastname: "",
     mobile: "",
   });
+
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
 
   const [isRegister, setIsRegister] = useState(false);
   const resetPayload = () => {
@@ -30,6 +30,12 @@ const Login = () => {
       lastname: "",
       mobile: "",
     });
+  };
+
+  const [email, setEmail] = useState("");
+  const handleForgotPassword = async () => {
+    const response = await apiForgotPassword({ email });
+    console.log(response);
   };
 
   const handleSubmit = useCallback(async () => {
@@ -64,6 +70,22 @@ const Login = () => {
   }, [payload, isRegister]);
   return (
     <div className="relative h-screen w-screen">
+      <div className="absolute bottom-0 left-0 right-0 top-0 z-50 flex flex-col items-center bg-white py-8">
+        <div className="flex flex-col gap-4">
+          <label htmlFor="email">Enter your email: </label>
+          <input
+            type="text"
+            id="email"
+            className="w-[800px] border-b pb-2 outline-none placeholder:text-sm"
+            placeholder="Exp: email@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <div className="flex w-full items-center justify-end">
+            <Button name="Submit" handleOnClick={handleForgotPassword} />
+          </div>
+        </div>
+      </div>
       <img
         src="https://static.vecteezy.com/system/resources/previews/011/220/317/non_2x/e-commerce-banner-design-on-light-blue-background-the-icons-are-collected-in-a-honeycomb-like-module-illustration-vector.jpg"
         alt=""

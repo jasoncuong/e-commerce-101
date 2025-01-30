@@ -41,6 +41,7 @@ const makeToken = require("uniqid");
 //   }
 // };
 
+//REGISTER
 const register = async (req, res) => {
   try {
     const { email, password, firstname, lastname, mobile } = req.body;
@@ -84,6 +85,7 @@ const finalRegister = async (req, res) => {
     const cookie = req.cookies;
     const { token } = req.params;
     if (!cookie || cookie?.dataRegister?.token !== token) {
+      res.clearCookie("dataRegister");
       return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
     }
 
@@ -95,6 +97,7 @@ const finalRegister = async (req, res) => {
       lastname: cookie?.dataRegister?.lastname,
     });
 
+    res.clearCookie("dataRegister");
     if (newUser) {
       return res.redirect(`${process.env.CLIENT_URL}/finalregister/succeed`);
     } else {
@@ -273,7 +276,7 @@ const logout = async (req, res) => {
 // Change password
 const forgotPassword = async (req, res) => {
   try {
-    const { email } = req.query;
+    const { email } = req.body;
     if (!email) {
       return res.status(400).json({
         success: false,
@@ -293,7 +296,7 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     //
-    const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn. Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here</a>`;
+    const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn. Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.CLIENT_URL}/resetpassword/${resetToken}>Click here</a>`;
 
     const data = {
       email,

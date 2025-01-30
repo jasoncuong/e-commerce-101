@@ -72,7 +72,7 @@ const DealDaily = () => {
         <span className="flex flex-1 justify-center">
           <AiFillStar size={20} color="#dd1111" />
         </span>
-        <span className="flex-8 flex justify-center text-center text-[20px] font-semibold text-gray-700">
+        <span className="flex flex-8 justify-center text-center text-[20px] font-semibold text-gray-700">
           DEAL DAILY
         </span>
         <span className="flex-1"></span>
@@ -106,7 +106,7 @@ const DealDaily = () => {
         </div>
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-2 bg-main py-2 font-medium text-white hover:bg-gray-800"
+          className="flex w-full items-center justify-center gap-2 bg-main py-2 font-medium text-white"
         >
           <AiOutlineMenu />
           <span>Option</span>

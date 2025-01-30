@@ -13,10 +13,10 @@ const FinalRegister = () => {
       });
     }
 
-    if (status === "success") {
+    if (status === "succeed") {
       Swal.fire(
         "Congratulation!",
-        "Registration successfully!",
+        "Registration successfully! Please Login",
         "success",
       ).then(() => {
         navigate(`/${path.LOGIN}`);
