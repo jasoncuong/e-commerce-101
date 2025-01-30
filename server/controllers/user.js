@@ -305,7 +305,12 @@ const forgotPassword = async (req, res) => {
     };
 
     const rs = await sendMail(data);
-    return res.status(200).json({ success: true, rs });
+    return res.status(200).json({
+      success: rs.response?.includes("OK") ? true : false,
+      message: rs.response?.includes("OK")
+        ? "Please check your email!"
+        : "Something went wrong. Please try later!",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -348,7 +353,7 @@ const resetPassword = async (req, res) => {
     return res.status(200).json({
       success: user ? true : false,
       message: user
-        ? "Updated password successfully!"
+        ? "Updated password successfully! Please Login"
         : "Updated password failed!",
     });
   } catch (error) {

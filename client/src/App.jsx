@@ -15,6 +15,7 @@ import path from "./utils/path";
 import { useEffect } from "react";
 import { getCategories } from "./store/app/asyncActions";
 import { useDispatch } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -35,12 +36,25 @@ const App = () => {
           <Route path={path.BLOGS} element={<Blogs />} />
           <Route path={path.FAQ} element={<FAQ />} />
           <Route path={path.PRODUCTS} element={<Products />} />
-          <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
         </Route>
 
+        <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.LOGIN} element={<Login />} />
       </Routes>
+
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

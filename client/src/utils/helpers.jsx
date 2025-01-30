@@ -30,3 +30,47 @@ export const renderStarFromNumber = (number, size) => {
 
   return stars;
 };
+
+export const validate = (payload, setInvalidFields) => {
+  let invalids = 0;
+  const formatPayload = Object.entries(payload);
+  for (let array of formatPayload) {
+    if (array[1].trim() === "") {
+      invalids++;
+      setInvalidFields((prev) => [
+        ...prev,
+        { name: array[0], message: "Require this field" },
+      ]);
+    }
+  }
+
+  for (let array of formatPayload) {
+    switch (array[0]) {
+      case "email":
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!array[1].match(regex)) {
+          invalids++;
+          setInvalidFields((prev) => [
+            ...prev,
+            { name: array[0], message: "Invalid email." },
+          ]);
+        }
+        break;
+
+      case "password":
+        if (array[1].length < 6) {
+          invalids++;
+          setInvalidFields((prev) => [
+            ...prev,
+            { name: array[0], message: "Password minimum 6 characters." },
+          ]);
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return invalids;
+};

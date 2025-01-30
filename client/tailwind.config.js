@@ -42,12 +42,34 @@ export default {
             transform: "translateY(0px)",
           },
         },
+        "slide-right": {
+          "0%": {
+            transform: "translateX(-1000px);",
+          },
+          "100%": {
+            transform: "translateX(0);",
+          },
+        },
+        "slide-left": {
+          "0%": {
+            transform: "translateX(1000);",
+          },
+          "100%": {
+            transform: "translateX(0);",
+          },
+        },
       },
       animation: {
         "slide-top":
           "slide-top 0.5s cubic-bezier(0.250, 0.460,0.450, 0.940) both",
 
         "slide-top-sm": "slide-top-sm 0.2s linear both",
+
+        "slide-right":
+          "slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both",
+
+        "slide-left":
+          "slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both",
       },
     },
   },
