@@ -59,19 +59,29 @@ const register = async (req, res) => {
       });
     } else {
       const token = makeToken();
-      res.cookie(
-        "dataRegister",
-        { ...req.body, token },
-        {
-          httpOnly: true,
-          maxAge: 15 * 60 * 1000,
-        }
-      );
-      const html = `Xin vui lòng click vào link dưới đây để hoàn tất quá trình đăng ký. Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.URL_SERVER}/api/user/finalregister/${token}>Click here</a>`;
-      await sendMail({ email, html, subject: "Complete registration" });
+      const emailEdited = btoa(email) + "@" + token;
+      const newUser = await User.create({
+        email: emailEdited,
+        password,
+        firstname,
+        lastname,
+        mobile,
+      });
+
+      if (newUser) {
+        const html = `<h2>Register code:</h2> <br/> <blockquote>${token}</blockquote>`;
+        await sendMail({ email, html, subject: "Complete registration" });
+      }
+
+      setTimeout(async () => {
+        await User.deleteOne({ email: emailEdited });
+      }, [300000]);
+
       return res.status(200).json({
-        success: true,
-        message: "Please check your email to active your account",
+        success: newUser ? true : false,
+        message: newUser
+          ? "Please check your email to active your account"
+          : "Something went wrong. Please try again later",
       });
     }
   } catch (error) {
@@ -82,27 +92,20 @@ const register = async (req, res) => {
 //Final Register (Xác thực email)
 const finalRegister = async (req, res) => {
   try {
-    const cookie = req.cookies;
     const { token } = req.params;
-    if (!cookie || cookie?.dataRegister?.token !== token) {
-      res.clearCookie("dataRegister");
-      return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
-    }
-
-    const newUser = await User.create({
-      email: cookie?.dataRegister?.email,
-      password: cookie?.dataRegister?.password,
-      mobile: cookie?.dataRegister?.mobile,
-      firstname: cookie?.dataRegister?.firstname,
-      lastname: cookie?.dataRegister?.lastname,
+    const notActiveEmail = await User.findOne({
+      email: new RegExp(`${token}$`),
     });
-
-    res.clearCookie("dataRegister");
-    if (newUser) {
-      return res.redirect(`${process.env.CLIENT_URL}/finalregister/succeed`);
-    } else {
-      return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`);
+    if (notActiveEmail) {
+      notActiveEmail.email = atob(notActiveEmail?.email?.split("@")[0]);
+      notActiveEmail.save();
     }
+    return res.status(200).json({
+      success: notActiveEmail ? true : false,
+      message: notActiveEmail
+        ? "Register successfully. Please Login."
+        : "Something went wrong. Please try again later.",
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

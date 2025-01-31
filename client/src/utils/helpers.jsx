@@ -44,33 +44,33 @@ export const validate = (payload, setInvalidFields) => {
     }
   }
 
-  for (let array of formatPayload) {
-    switch (array[0]) {
-      case "email":
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!array[1].match(regex)) {
-          invalids++;
-          setInvalidFields((prev) => [
-            ...prev,
-            { name: array[0], message: "Invalid email." },
-          ]);
-        }
-        break;
+  // for (let array of formatPayload) {
+  //   switch (array[0]) {
+  //     case "email":
+  //       const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //       if (!array[1].match(regex)) {
+  //         invalids++;
+  //         setInvalidFields((prev) => [
+  //           ...prev,
+  //           { name: array[0], message: "Invalid email." },
+  //         ]);
+  //       }
+  //       break;
 
-      case "password":
-        if (array[1].length < 6) {
-          invalids++;
-          setInvalidFields((prev) => [
-            ...prev,
-            { name: array[0], message: "Password minimum 6 characters." },
-          ]);
-        }
-        break;
+  //     case "password":
+  //       if (array[1].length < 6) {
+  //         invalids++;
+  //         setInvalidFields((prev) => [
+  //           ...prev,
+  //           { name: array[0], message: "Password minimum 6 characters." },
+  //         ]);
+  //       }
+  //       break;
 
-      default:
-        break;
-    }
-  }
+  //     default:
+  //       break;
+  //   }
+  // }
 
   return invalids;
 };

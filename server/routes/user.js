@@ -6,7 +6,7 @@ const { verifyAccessToken, isAdmin } = require("../middlewares/verifyToken");
 router.post("/register", ctrls.register);
 
 //FINAL REGISTER
-router.get("/finalregister/:token", ctrls.finalRegister);
+router.put("/finalregister/:token", ctrls.finalRegister);
 
 //LOGIN
 router.post("/login", ctrls.login);
