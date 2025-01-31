@@ -25,7 +25,8 @@
     "react-toastify": "^11.0.3",
     "redux-persist": "^6.0.0",
     "slick-carousel": "^1.8.1",
-    "sweetalert2": "^11.15.10"
+    "sweetalert2": "^11.15.10",
+    "use-react-router-breadcrumbs": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

@@ -19,7 +19,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex w-main">
+      <div className="mt-6 flex w-main">
         <div className="flex w-[25%] flex-auto flex-col gap-5">
           <Sidebar />
           <DealDaily />

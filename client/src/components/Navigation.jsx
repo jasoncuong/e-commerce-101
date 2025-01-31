@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const Navigation = () => {
   return (
-    <div className="mb-6 flex h-[48px] w-main items-center border-y py-2 text-sm">
+    <div className="flex h-[48px] w-main items-center border-y py-2 text-sm">
       {navigation.map((el) => (
         <NavLink
           key={el.id}
