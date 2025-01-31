@@ -33,3 +33,9 @@ export const apiResetPassword = (data) =>
     method: "put",
     data: data,
   });
+
+export const apiGetCurrent = () =>
+  axios({
+    url: "/user/current",
+    method: "get",
+  });
