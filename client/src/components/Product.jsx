@@ -9,7 +9,7 @@ import path from "../utils/path";
 
 const { FaHeart, AiOutlineMenu, FaEye } = icons;
 
-const Product = ({ productData, isNew }) => {
+const Product = ({ productData, isNew, normal }) => {
   const [isShowOption, setIsShowOption] = useState(false);
   return (
     <div className="w-full px-[10px] text-base">
@@ -40,11 +40,14 @@ const Product = ({ productData, isNew }) => {
             alt=""
             className="h-[274px] w-[274px] object-cover"
           />
-          <img
-            src={isNew ? label : labelblue}
-            alt=""
-            className={`absolute left-[-44px] top-[-34px] w-[120px] object-contain`}
-          />
+
+          {!normal && (
+            <img
+              src={isNew ? label : labelblue}
+              alt=""
+              className={`absolute left-[-44px] top-[-34px] w-[120px] object-contain`}
+            />
+          )}
 
           <span
             className={`absolute left-[-14px] top-[-12px] font-bold text-white ${isNew ? "" : "text-sm"} `}

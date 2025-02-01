@@ -1,7 +1,14 @@
 import { useParams } from "react-router-dom";
-import { apiGetDetailProduct } from "../../apis";
+import { apiGetDetailProduct, apiGetProduct } from "../../apis";
 import { useState, useEffect, useCallback } from "react";
-import { Breadcrumbs, Button, SelectQuantity } from "../../components";
+import {
+  Breadcrumbs,
+  Button,
+  SelectQuantity,
+  ProductExtraInfoItem,
+  ProductInformation,
+  CustomSlider,
+} from "../../components";
 import Slider from "react-slick";
 import ReactImageMagnify from "react-image-magnify";
 import {
@@ -9,6 +16,7 @@ import {
   formatMoney,
   renderStarFromNumber,
 } from "../../utils/helpers";
+import { productExtraInfo } from "../../utils/contants";
 
 var settings = {
   dots: false,
@@ -22,6 +30,7 @@ const DetailProducts = () => {
   const { pid, title, category } = useParams();
   const [products, setProducts] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [relatedProduct, setRelatedProduct] = useState(null);
 
   const fetchProductData = async () => {
     const response = await apiGetDetailProduct(pid);
@@ -30,9 +39,17 @@ const DetailProducts = () => {
     }
   };
 
+  const fetchProducts = async () => {
+    const response = await apiGetProduct({ category });
+    if (response.success) {
+      setRelatedProduct(response.products);
+    }
+  };
+
   useEffect(() => {
     if (pid) {
       fetchProductData();
+      fetchProducts();
     }
   }, [pid]);
 
@@ -119,18 +136,40 @@ const DetailProducts = () => {
             ))}
           </ul>
           <div className="flex flex-col gap-8">
-            <SelectQuantity
-              handleQuantity={handleQuantity}
-              quantity={quantity}
-              handleChangeQuantity={handleChangeQuantity}
-            />
+            <div className="flex items-center gap-4">
+              <span className="font-semibold">Quantity</span>
+              <SelectQuantity
+                handleQuantity={handleQuantity}
+                quantity={quantity}
+                handleChangeQuantity={handleChangeQuantity}
+              />
+            </div>
             <Button fullWidth>Add to cart</Button>
           </div>
         </div>
-        <div className="w-1/5 border border-green-300">info</div>
+        <div className="w-1/5">
+          {productExtraInfo?.map((el) => (
+            <ProductExtraInfoItem
+              key={el.id}
+              title={el.title}
+              sub={el.sub}
+              icon={el.icon}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="h-[500px] w-full"></div>
+      <div className="m-auto mt-8 w-main">
+        <ProductInformation />
+      </div>
+
+      <div className="m-auto mt-8 w-main">
+        <h3 className="border-b-2 border-main py-[15px] text-[20px] font-semibold">
+          OTHER CUSTOMERS ALSO BUY:
+        </h3>
+        <CustomSlider products={relatedProduct} normal={true} />
+      </div>
+      <div className="h-[100px] w-full"></div>
     </div>
   );
 };
