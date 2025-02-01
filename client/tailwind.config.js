@@ -5,6 +5,13 @@ export default {
     fontFamily: {
       main: ["Poppins", "serif"],
     },
+    listStyleType: {
+      none: "none",
+      disc: "disc",
+      decimal: "decimal",
+      square: "square",
+      roman: "upper-roman",
+    },
     extend: {
       width: {
         main: "1220px",

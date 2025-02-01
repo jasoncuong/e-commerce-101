@@ -43,7 +43,6 @@ export const validate = (payload, setInvalidFields) => {
       ]);
     }
   }
-
   // for (let array of formatPayload) {
   //   switch (array[0]) {
   //     case "email":
@@ -71,6 +70,8 @@ export const validate = (payload, setInvalidFields) => {
   //       break;
   //   }
   // }
-
   return invalids;
 };
+
+//
+export const formatPrice = (number) => Math.round(number / 1000) * 1000;
