@@ -49,11 +49,13 @@ const Product = ({ productData, isNew, normal }) => {
             />
           )}
 
-          <span
-            className={`absolute left-[-14px] top-[-12px] font-bold text-white ${isNew ? "" : "text-sm"} `}
-          >
-            {isNew ? "New" : "Trending"}
-          </span>
+          {!normal && (
+            <span
+              className={`absolute left-[-14px] top-[-12px] font-bold text-white ${isNew ? "" : "text-sm"} `}
+            >
+              {isNew ? "New" : "Trending"}
+            </span>
+          )}
         </div>
         <div className="mt-[15px] flex w-full flex-col items-start gap-1">
           <span className="flex h-4">

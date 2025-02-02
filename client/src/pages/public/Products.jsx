@@ -15,6 +15,7 @@ const Products = () => {
   const { category } = useParams();
   const [products, setProducts] = useState(null);
   const [activeClick, setActiveClick] = useState(null);
+  const [params] = useSearchParams();
 
   const fetchProductsByCategory = async (queries) => {
     const response = await apiGetProduct(queries);
@@ -24,8 +25,15 @@ const Products = () => {
   };
 
   useEffect(() => {
-    fetchProductsByCategory();
-  }, []);
+    let param = [];
+    for (let i of params.entries()) param.push(i);
+
+    const queries = {};
+    for (let i of params) queries[i[0]] = i[1];
+
+    console.log("🚀 ~ useEffect ~ param:", param);
+    fetchProductsByCategory(queries);
+  }, [params]);
 
   const changeActiveFilter = useCallback(
     (name) => {
@@ -55,11 +63,13 @@ const Products = () => {
               name="price"
               activeClick={activeClick}
               changeActiveFilter={changeActiveFilter}
+              type="input"
             />
             <SearchItem
               name="color"
               activeClick={activeClick}
               changeActiveFilter={changeActiveFilter}
+              type="checkbox"
             />
           </div>
         </div>
