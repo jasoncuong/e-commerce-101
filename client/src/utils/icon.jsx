@@ -11,7 +11,7 @@ import {
   FaReply,
   FaTty,
 } from "react-icons/fa";
-import { IoIosArrowForward, IoIosLogOut } from "react-icons/io";
+import { IoIosArrowForward, IoIosLogOut, IoIosArrowDown } from "react-icons/io";
 import {
   AiFillHome,
   AiFillStar,
@@ -37,6 +37,7 @@ const icons = {
   FaGift,
   FaReply,
   FaTty,
+  IoIosArrowDown,
 };
 
 export default icons;

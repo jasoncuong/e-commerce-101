@@ -38,19 +38,17 @@ const Footer = () => {
             </h3>
             <span>
               <span>Address: </span>
-              <span className="opacity-70 hover:bg-main">
+              <span className="opacity-70">
                 474 Ontario St Toronto, ON M4X 1M7 Canada{" "}
               </span>
             </span>
             <span>
               <span>Phone: </span>
-              <span className="opacity-70 hover:bg-main">(+1234)56789xxx</span>
+              <span className="opacity-70">(+1234)56789xxx</span>
             </span>
             <span>
               <span>Mail: </span>
-              <span className="opacity-70 hover:bg-main">
-                tadathemes@gmail.com
-              </span>
+              <span className="opacity-70">tadathemes@gmail.com</span>
             </span>
           </div>
           <div className="flex flex-1 flex-col gap-2">
