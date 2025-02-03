@@ -3,6 +3,7 @@ import icons from "../utils/icon";
 import { colors } from "../utils/contants";
 import path from "../utils/path";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
+import { apiGetProduct } from "../apis";
 
 const { IoIosArrowDown } = icons;
 
@@ -10,6 +11,8 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
   const navigate = useNavigate();
   const { category } = useParams();
   const [selected, setSelected] = useState([]);
+  const [highestPrice, setHighestPrice] = useState(null);
+  const [price, setPrice] = useState([0, 0]);
 
   const handleSelect = (e) => {
     const alreadyEl = selected.find((el) => el === e.target.value);
@@ -22,13 +25,41 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
   };
 
   useEffect(() => {
-    navigate({
-      pathname: `/${category}`,
-      search: createSearchParams({
-        color: selected,
-      }).toString(),
-    });
+    if (selected.length > 0) {
+      navigate({
+        pathname: `/${category}`,
+        search: createSearchParams({
+          color: selected.join(","),
+        }).toString(),
+      });
+    } else {
+      navigate(`/${category}`);
+    }
   }, [selected]);
+
+  const fetchHighestPriceProduct = async () => {
+    const response = await apiGetProduct({ sort: "-price", limit: 1 });
+    if (response.success) setHighestPrice(response.products[0].price);
+  };
+
+  useEffect(() => {
+    if (type === "input") fetchHighestPriceProduct();
+  }, [type]);
+
+  useEffect(() => {
+    console.log(price);
+
+    // const validPrice = price.filter((el) => +el > 0);
+
+    // if (price.from > 0) {
+    //   navigate({
+    //     pathname: `/${category}`,
+    //     search: createSearchParams(validPrice).toString(),
+    //   });
+    // } else {
+    //   navigate(`/${category}`);
+    // }
+  }, [price]);
 
   return (
     <div
@@ -80,6 +111,57 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
                     </label>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {type === "input" && (
+            <div onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between gap-8 border-b p-4">
+                <span className="whitespace-nowrap">{`The hightest price is ${Number(highestPrice).toLocaleString()} VND`}</span>
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelected([]);
+                  }}
+                  className="cursor-pointer underline hover:text-main"
+                >
+                  Reset
+                </span>
+              </div>
+              <div className="flex items-center gap-2 p-2">
+                <div className="flex items-center gap-2">
+                  <label htmlFor="from">From</label>
+                  <input
+                    value={price[0]}
+                    onChange={(e) =>
+                      setPrice((prev) =>
+                        prev.map((el, index) =>
+                          index === 0 ? e.target.value : el,
+                        ),
+                      )
+                    }
+                    className="form-input"
+                    type="number"
+                    id="from"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <label htmlFor="to">To</label>
+                  <input
+                    value={price[1]}
+                    onChange={(e) =>
+                      setPrice((prev) =>
+                        prev.map((el, index) =>
+                          index === 1 ? e.target.value : el,
+                        ),
+                      )
+                    }
+                    className="form-input"
+                    type="number"
+                    id="to"
+                  />
+                </div>
               </div>
             </div>
           )}

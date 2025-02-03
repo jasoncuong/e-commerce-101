@@ -31,7 +31,6 @@ const Products = () => {
     const queries = {};
     for (let i of params) queries[i[0]] = i[1];
 
-    console.log("🚀 ~ useEffect ~ param:", param);
     fetchProductsByCategory(queries);
   }, [params]);
 
