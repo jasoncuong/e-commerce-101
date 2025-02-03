@@ -1,8 +1,19 @@
-import { useParams, useSearchParams } from "react-router-dom";
-import { Breadcrumbs, Product, SearchItem } from "../../components";
+import {
+  useParams,
+  useSearchParams,
+  useNavigate,
+  createSearchParams,
+} from "react-router-dom";
+import {
+  Breadcrumbs,
+  Product,
+  SearchItem,
+  InputSelect,
+} from "../../components";
 import { apiGetProduct } from "../../apis";
 import { useEffect, useState, useCallback } from "react";
 import Masonry from "react-masonry-css";
+import { sorts } from "../../utils/contants";
 
 const breakpointColumnsObj = {
   default: 4,
@@ -12,10 +23,12 @@ const breakpointColumnsObj = {
 };
 
 const Products = () => {
+  const navigate = useNavigate();
   const { category } = useParams();
   const [products, setProducts] = useState(null);
   const [activeClick, setActiveClick] = useState(null);
   const [params] = useSearchParams();
+  const [sort, setSort] = useState("");
 
   const fetchProductsByCategory = async (queries) => {
     const response = await apiGetProduct(queries);
@@ -31,7 +44,23 @@ const Products = () => {
     const queries = {};
     for (let i of params) queries[i[0]] = i[1];
 
-    fetchProductsByCategory(queries);
+    let priceQuery = {};
+    if (queries.from && queries.to) {
+      priceQuery = {
+        $and: [
+          { price: { gte: queries.from } },
+          { price: { lte: queries.to } },
+        ],
+      };
+      delete queries.price;
+    }
+    if (queries.from) queries.price = { gte: queries.from };
+    if (queries.to) queries.price = { lte: queries.to };
+    delete queries.from;
+    delete queries.to;
+
+    const q = { ...priceQuery, ...queries };
+    fetchProductsByCategory(q);
   }, [params]);
 
   const changeActiveFilter = useCallback(
@@ -44,6 +73,22 @@ const Products = () => {
     },
     [activeClick],
   );
+
+  const changeValue = useCallback(
+    (value) => {
+      setSort(value);
+    },
+    [sort],
+  );
+
+  useEffect(() => {
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams({
+        sort,
+      }).toString(),
+    });
+  }, [sort]);
 
   return (
     <div className="w-full">
@@ -72,7 +117,17 @@ const Products = () => {
             />
           </div>
         </div>
-        <div className="flex w-1/5">Sort by</div>
+
+        <div className="flex w-1/5 flex-col gap-3">
+          <span className="text-sm font-semibold">Sort by</span>
+          <div className="w-full">
+            <InputSelect
+              value={sort}
+              options={sorts}
+              changeValue={changeValue}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="m-auto mt-8 w-main">

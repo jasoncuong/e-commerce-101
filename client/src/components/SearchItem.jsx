@@ -4,6 +4,7 @@ import { colors } from "../utils/contants";
 import path from "../utils/path";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 import { apiGetProduct } from "../apis";
+import useDebounce from "../hooks/useDebounce";
 
 const { IoIosArrowDown } = icons;
 
@@ -12,7 +13,10 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
   const { category } = useParams();
   const [selected, setSelected] = useState([]);
   const [highestPrice, setHighestPrice] = useState(null);
-  const [price, setPrice] = useState([0, 0]);
+  const [price, setPrice] = useState({
+    from: "",
+    to: "",
+  });
 
   const handleSelect = (e) => {
     const alreadyEl = selected.find((el) => el === e.target.value);
@@ -46,20 +50,19 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
     if (type === "input") fetchHighestPriceProduct();
   }, [type]);
 
+  const debouncePriceFrom = useDebounce(price.from, 500);
+  const debouncePriceTo = useDebounce(price.to, 500);
   useEffect(() => {
-    console.log(price);
+    const data = {};
 
-    // const validPrice = price.filter((el) => +el > 0);
+    if (Number(price.from) > 0) data.from = price.from;
+    if (Number(price.to) > 0) data.to = price.to;
 
-    // if (price.from > 0) {
-    //   navigate({
-    //     pathname: `/${category}`,
-    //     search: createSearchParams(validPrice).toString(),
-    //   });
-    // } else {
-    //   navigate(`/${category}`);
-    // }
-  }, [price]);
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams(data).toString(),
+    });
+  }, [debouncePriceFrom, debouncePriceTo]);
 
   return (
     <div
@@ -122,7 +125,8 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
                 <span
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelected([]);
+                    setPrice({ from: "", to: "" });
+                    changeActiveFilter(null);
                   }}
                   className="cursor-pointer underline hover:text-main"
                 >
@@ -133,13 +137,9 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
                 <div className="flex items-center gap-2">
                   <label htmlFor="from">From</label>
                   <input
-                    value={price[0]}
+                    value={price.from}
                     onChange={(e) =>
-                      setPrice((prev) =>
-                        prev.map((el, index) =>
-                          index === 0 ? e.target.value : el,
-                        ),
-                      )
+                      setPrice((prev) => ({ ...prev, from: e.target.value }))
                     }
                     className="form-input"
                     type="number"
@@ -149,13 +149,9 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
                 <div className="flex items-center gap-2">
                   <label htmlFor="to">To</label>
                   <input
-                    value={price[1]}
+                    value={price.to}
                     onChange={(e) =>
-                      setPrice((prev) =>
-                        prev.map((el, index) =>
-                          index === 1 ? e.target.value : el,
-                        ),
-                      )
+                      setPrice((prev) => ({ ...prev, to: e.target.value }))
                     }
                     className="form-input"
                     type="number"
