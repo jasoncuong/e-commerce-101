@@ -53,6 +53,8 @@ const DetailProducts = () => {
       fetchProductData();
       fetchProducts();
     }
+
+    window.scrollTo(0, 0);
   }, [pid]);
 
   const handleQuantity = useCallback(
@@ -171,6 +173,7 @@ const DetailProducts = () => {
         <ProductInformation
           totalRatings={products?.totalRatings}
           totalCount={18}
+          nameProduct={products?.title}
         />
       </div>
 

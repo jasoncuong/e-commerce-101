@@ -1,9 +1,13 @@
-import { memo, useState } from "react";
+import { memo, useState, useCallback } from "react";
 import { productInfoTabs } from "../utils/contants";
-import { VoteBar } from "../components";
+import { VoteBar, Button, VoteOptions } from "../components";
 import { renderStarFromNumber } from "../utils/helpers";
+import { apiRatings } from "../apis";
+import { useDispatch } from "react-redux";
+import { showModal } from "../store/app/appSlice";
 
-const ProductInformation = ({ totalRatings, totalCount }) => {
+const ProductInformation = ({ totalRatings, totalCount, nameProduct }) => {
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState(1);
 
   return (
@@ -31,27 +35,44 @@ const ProductInformation = ({ totalRatings, totalCount }) => {
           productInfoTabs?.find((el) => el.id === activeTab)?.content}
 
         {activeTab === 5 && (
-          <div className="flex p-4">
-            <div className="flex flex-4 flex-col items-center justify-center border border-red-500">
-              <span className="text-3xl font-semibold">{`${totalRatings}/5`}</span>
-              <span className="flex items-center gap-1">
-                {renderStarFromNumber(totalRatings)?.map((el, index) => (
-                  <span key={index}>{el}</span>
-                ))}
-              </span>
-              <span className="text-sm">{`${totalCount} reviews`}</span>
+          <div className="flex flex-col p-4">
+            <div className="flex">
+              <div className="flex flex-4 flex-col items-center justify-center border border-red-500">
+                <span className="text-3xl font-semibold">{`${totalRatings}/5`}</span>
+                <span className="flex items-center gap-1">
+                  {renderStarFromNumber(totalRatings)?.map((el, index) => (
+                    <span key={index}>{el}</span>
+                  ))}
+                </span>
+                <span className="text-sm">{`${totalCount} reviews`}</span>
+              </div>
+              <div className="flex flex-6 flex-col gap-2 border border-blue-500 p-4">
+                {Array.from(Array(5).keys())
+                  .reverse()
+                  .map((el, index) => (
+                    <VoteBar
+                      key={index}
+                      number={el + 1}
+                      ratingTotal={5}
+                      ratingCount={2}
+                    />
+                  ))}
+              </div>
             </div>
-            <div className="flex flex-6 flex-col gap-2 border border-blue-500 p-4">
-              {Array.from(Array(5).keys())
-                .reverse()
-                .map((el, index) => (
-                  <VoteBar
-                    key={index}
-                    number={el + 1}
-                    ratingTotal={5}
-                    ratingCount={2}
-                  />
-                ))}
+            <div className="flex flex-col items-center justify-center gap-2 p-4 text-sm">
+              <span>Do you review this product?</span>
+              <Button
+                handleOnClick={() =>
+                  dispatch(
+                    showModal({
+                      isShowModal: true,
+                      modalChildren: <VoteOptions nameProduct={nameProduct} />,
+                    }),
+                  )
+                }
+              >
+                Rate now
+              </Button>
             </div>
           </div>
         )}
