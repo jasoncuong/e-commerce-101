@@ -31,11 +31,13 @@ const DetailProducts = () => {
   const [products, setProducts] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [relatedProduct, setRelatedProduct] = useState(null);
+  const [currentImage, setCurrentImage] = useState(null);
 
   const fetchProductData = async () => {
     const response = await apiGetDetailProduct(pid);
     if (response.success) {
       setProducts(response.productData);
+      setCurrentImage(response?.productData?.thumb);
     }
   };
 
@@ -73,6 +75,11 @@ const DetailProducts = () => {
     [quantity],
   );
 
+  const handleClickImage = (e, el) => {
+    e.stopPropagation();
+    setCurrentImage(el);
+  };
+
   return (
     <div className="w-full">
       <div className="flex h-[81px] items-center justify-center bg-gray-100">
@@ -84,16 +91,16 @@ const DetailProducts = () => {
 
       <div className="m-auto mt-4 flex w-main">
         <div className="flex w-2/5 flex-col gap-4">
-          <div className="h-[458px] w-[458px] border">
+          <div className="h-[458px] w-[458px] overflow-hidden border">
             <ReactImageMagnify
               {...{
                 smallImage: {
                   alt: "Wristwatch by Ted Baker London",
                   isFluidWidth: true,
-                  src: products?.thumb,
+                  src: currentImage,
                 },
                 largeImage: {
-                  src: products?.thumb,
+                  src: currentImage,
                   width: 1800,
                   height: 1500,
                 },
@@ -108,9 +115,10 @@ const DetailProducts = () => {
               {products?.images?.map((el, index) => (
                 <div key={index} className="flex-1">
                   <img
+                    onClick={(e) => handleClickImage(e, el)}
                     src={el}
                     alt="sub-product"
-                    className="h-[143px] border object-contain"
+                    className="h-[143px] cursor-pointer border object-contain"
                   />
                 </div>
               ))}
@@ -120,7 +128,7 @@ const DetailProducts = () => {
         <div className="flex w-2/5 flex-col gap-4 pr-6">
           <div className="flex items-center justify-between">
             <h2 className="text-[30px] font-semibold">{`${formatMoney(formatPrice(products?.price))} VND`}</h2>
-            <span className="text-sm text-main">{`Store: ${products?.quantity}`}</span>
+            <span className="text-sm text-main">{`Instock: ${products?.quantity}`}</span>
           </div>
           <div className="flex items-center gap-1">
             {renderStarFromNumber(products?.totalRatings)?.map((el, index) => (
@@ -160,7 +168,10 @@ const DetailProducts = () => {
       </div>
 
       <div className="m-auto mt-8 w-main">
-        <ProductInformation />
+        <ProductInformation
+          totalRatings={products?.totalRatings}
+          totalCount={18}
+        />
       </div>
 
       <div className="m-auto mt-8 w-main">
