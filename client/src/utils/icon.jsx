@@ -1,5 +1,6 @@
 import { RiPhoneFill } from "react-icons/ri";
 import { MdEmail } from "react-icons/md";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { BsHandbagFill } from "react-icons/bs";
 import {
   FaUserCircle,
@@ -38,6 +39,7 @@ const icons = {
   FaReply,
   FaTty,
   IoIosArrowDown,
+  BiDotsHorizontalRounded,
 };
 
 export default icons;

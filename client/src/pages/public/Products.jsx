@@ -9,6 +9,7 @@ import {
   Product,
   SearchItem,
   InputSelect,
+  Pagination,
 } from "../../components";
 import { apiGetProduct } from "../../apis";
 import { useEffect, useState, useCallback } from "react";
@@ -140,6 +141,10 @@ const Products = () => {
             <Product key={index} normal={true} pid={el.id} productData={el} />
           ))}
         </Masonry>
+      </div>
+
+      <div className="m-auto my-4 flex w-main justify-end">
+        <Pagination />
       </div>
 
       <div className="h-[500px] w-full"></div>
