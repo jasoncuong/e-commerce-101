@@ -2,13 +2,19 @@ import { memo, useEffect, useState } from "react";
 import icons from "../utils/icon";
 import { colors } from "../utils/contants";
 import path from "../utils/path";
-import { createSearchParams, useNavigate, useParams } from "react-router-dom";
+import {
+  createSearchParams,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { apiGetProduct } from "../apis";
 import useDebounce from "../hooks/useDebounce";
 
 const { IoIosArrowDown } = icons;
 
 const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
+  const [params] = useSearchParams();
   const navigate = useNavigate();
   const { category } = useParams();
   const [selected, setSelected] = useState([]);
@@ -28,18 +34,27 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
     changeActiveFilter(null);
   };
 
+  const debouncePriceFrom = useDebounce(price.from, 500);
+  const debouncePriceTo = useDebounce(price.to, 500);
   useEffect(() => {
     if (selected.length > 0) {
+      let param = [];
+      for (let i of params.entries()) param.push(i);
+      const queries = {};
+      for (let i of params) queries[i[0]] = [i[1]];
+      if (selected) queries.color = selected.join(",");
+
+      if (Number(price.from) > 0) queries.from = price.from;
+      if (Number(price.to) > 0) queries.to = price.to;
+      queries.page = 1;
       navigate({
         pathname: `/${category}`,
-        search: createSearchParams({
-          color: selected.join(","),
-        }).toString(),
+        search: createSearchParams(queries).toString(),
       });
     } else {
       navigate(`/${category}`);
     }
-  }, [selected]);
+  }, [selected, debouncePriceFrom, debouncePriceTo]);
 
   const fetchHighestPriceProduct = async () => {
     const response = await apiGetProduct({ sort: "-price", limit: 1 });
@@ -49,20 +64,6 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type }) => {
   useEffect(() => {
     if (type === "input") fetchHighestPriceProduct();
   }, [type]);
-
-  const debouncePriceFrom = useDebounce(price.from, 500);
-  const debouncePriceTo = useDebounce(price.to, 500);
-  useEffect(() => {
-    const data = {};
-
-    if (Number(price.from) > 0) data.from = price.from;
-    if (Number(price.to) > 0) data.to = price.to;
-
-    navigate({
-      pathname: `/${category}`,
-      search: createSearchParams(data).toString(),
-    });
-  }, [debouncePriceFrom, debouncePriceTo]);
 
   return (
     <div
