@@ -34,7 +34,7 @@ const Home = () => {
       </div>
 
       {/* NEW ARRIVALS */}
-      <div className="my-8 w-full">
+      <div className="my-8 w-main">
         <h3 className="border-b-2 border-main py-[15px] text-[20px] font-semibold">
           NEW ARRIVALS
         </h3>
@@ -44,7 +44,7 @@ const Home = () => {
       </div>
 
       {/* HOT COLLECTIONS */}
-      <div className="my-8 w-full">
+      <div className="my-8 w-main">
         <h3 className="border-b-2 border-main py-[15px] text-[20px] font-semibold">
           HOT COLLECTIONS
         </h3>
@@ -79,7 +79,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="my-8 w-full">
+      <div className="my-8 w-main">
         <h3 className="border-b-2 border-main py-[15px] text-[20px] font-semibold">
           BLOG POSTS
         </h3>

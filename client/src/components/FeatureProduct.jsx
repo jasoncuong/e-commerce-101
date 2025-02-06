@@ -20,7 +20,7 @@ const FeatureProduct = () => {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-main">
       <h3 className="border-b-2 border-main py-[15px] text-[20px] font-semibold">
         FEATURED PRODUCTS
       </h3>

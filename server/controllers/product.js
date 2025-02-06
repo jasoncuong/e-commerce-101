@@ -28,12 +28,18 @@ const createProduct = async (req, res) => {
   }
 };
 
-//GET PRODUCT
+//GET DETAIL PRODUCT
 const getProduct = async (req, res) => {
   try {
     const { pid } = req.params;
 
-    const product = await Product.findById(pid);
+    const product = await Product.findById(pid).populate({
+      path: "ratings",
+      populate: {
+        path: "postedBy",
+        select: "firstname lastname avatar",
+      },
+    });
     return res.status(200).json({
       success: product ? true : false,
       productData: product ? product : "Cannot get product",
@@ -172,7 +178,7 @@ const deleteProduct = async (req, res) => {
 const ratings = async (req, res) => {
   try {
     const { _id } = req.user;
-    const { star, comment, pid } = req.body;
+    const { star, comment, pid, updatedAt } = req.body;
     if (!star || !pid) {
       return res
         .status(401)
@@ -191,7 +197,11 @@ const ratings = async (req, res) => {
           ratings: { $elemMatch: alreadyRating },
         },
         {
-          $set: { "ratings.$.star": star, "ratings.$.comment": comment },
+          $set: {
+            "ratings.$.star": star,
+            "ratings.$.comment": comment,
+            "ratings.$.updatedAt": updatedAt,
+          },
         },
         { new: true }
       );
@@ -200,7 +210,7 @@ const ratings = async (req, res) => {
       await Product.findByIdAndUpdate(
         pid,
         {
-          $push: { ratings: { star, comment, postedBy: _id } },
+          $push: { ratings: { star, comment, updatedAt, postedBy: _id } },
         },
         { new: true }
       );
