@@ -39,13 +39,7 @@ const Products = () => {
   };
 
   useEffect(() => {
-    let param = [];
-    for (let i of params.entries()) param.push(i);
-
-    const queries = {};
-    for (let i of params) queries[i[0]] = i[1];
-
-    let priceQuery = {};
+    const queries = Object.fromEntries([...params]);
     if (queries.from && queries.to) {
       priceQuery = {
         $and: [

@@ -2,13 +2,14 @@ import usePagination from "../hooks/usePagination";
 import PaginationItem from "./PaginationItem";
 import { useSearchParams } from "react-router-dom";
 
-const Pagination = ({ totalCount, productNumber }) => {
+const Pagination = ({ totalCount }) => {
   const [params] = useSearchParams();
-  const pagination = usePagination(totalCount, 2);
+  const pagination = usePagination(totalCount, params.get("page") || 1);
+  // console.log(params.get("page"));
 
   const range = () => {
     const currentPage = +params.get("page");
-    const pageSize = +import.meta.env.REACT_APP_PRODUCT_LIMIT || 10;
+    const pageSize = +import.meta.env.VITE_REACT_APP_PRODUCT_LIMIT || 10;
     const start = (currentPage - 1) * pageSize + 1;
     const end = Math.min(currentPage * pageSize, totalCount);
 
@@ -16,9 +17,9 @@ const Pagination = ({ totalCount, productNumber }) => {
   };
 
   return (
-    <div className="flex w-main items-center justify-between">
+    <div className="flex w-full items-center justify-between">
       {!+params.get("page") && (
-        <span className="italuc text-sm">{`Show products 1 - ${+import.meta.env.REACT_APP_PRODUCT_LIMIT || 10} of ${totalCount}`}</span>
+        <span className="italuc text-sm">{`Show products 1 - ${Math.min(+import.meta.env.VITE_REACT_APP_PRODUCT_LIMIT, totalCount)} of ${totalCount}`}</span>
       )}
 
       {+params.get("page") && (

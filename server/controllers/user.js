@@ -200,6 +200,15 @@ const getUsers = async (req, res) => {
       formatedQueries.name = { $regex: queries.name, $options: "i" };
     }
 
+    if (req.query.q) {
+      delete formatedQueries.q;
+      formatedQueries["$or"] = [
+        { firstname: { $regex: req.query.q, $options: "i" } },
+        { lastname: { $regex: req.query.q, $options: "i" } },
+        { email: { $regex: req.query.q, $options: "i" } },
+      ];
+    }
+
     let queryCommand = User.find(formatedQueries);
 
     //Sorting
