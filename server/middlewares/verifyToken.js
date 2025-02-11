@@ -26,7 +26,7 @@ const verifyAccessToken = async (req, res, next) => {
 const isAdmin = async (req, res, next) => {
   try {
     const { role } = req.user;
-    if (+role !== 8386) {
+    if (role !== "admin") {
       return res
         .status(401)
         .json({ success: false, message: "REQUIRE ADMIN ROLE!" });

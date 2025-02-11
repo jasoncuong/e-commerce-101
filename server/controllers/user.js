@@ -75,7 +75,7 @@ const register = async (req, res) => {
 
       setTimeout(async () => {
         await User.deleteOne({ email: emailEdited });
-      }, [300000]);
+      }, [60000]);
 
       return res.status(200).json({
         success: newUser ? true : false,
@@ -182,10 +182,63 @@ const getCurrent = async (req, res) => {
 //GET ALL USER
 const getUsers = async (req, res) => {
   try {
-    const response = await User.find().select("-refreshToken -password -role");
-    return res
-      .status(200)
-      .json({ success: response ? true : false, users: response });
+    const queries = { ...req.query };
+    // Tách các trường đặc biệt ra khỏi query
+    const excludeFields = ["limit", "sort", "page", "fields"];
+    excludeFields.forEach((item) => delete queries[item]);
+
+    //Format lại các operators cho đúng cứ pháp của mongoose
+    let queryString = JSON.stringify(queries);
+    queryString = queryString.replace(
+      /\b(gte|gt|lt|lte)\b/g,
+      (matchedEl) => `$${matchedEl}`
+    );
+    const formatedQueries = JSON.parse(queryString);
+
+    //Filtering
+    if (queries?.name) {
+      formatedQueries.name = { $regex: queries.name, $options: "i" };
+    }
+
+    let queryCommand = User.find(formatedQueries);
+
+    //Sorting
+    if (req.query.sort) {
+      //abc,efg => [abc,efg] => abc efg
+      const sortBy = req.query.sort.split(",").join(" ");
+      queryCommand = queryCommand.sort(sortBy);
+    }
+
+    //Fields limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      queryCommand = queryCommand.select(fields);
+    }
+
+    //Pagination
+    //limit: số object lấy về 1 lần gọi API
+    //skip
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCT;
+    const skip = (page - 1) * limit;
+
+    queryCommand = queryCommand.skip(skip).limit(limit);
+
+    //Execute query
+    //Số lượng sp thỏa mãn diều kiện !== số lượng sp trả về 1 lần gọi API
+    queryCommand
+      .then(async (response) => {
+        const counts = await User.find(formatedQueries).countDocuments();
+
+        return res.status(200).json({
+          success: response ? true : false,
+          counts,
+          users: response ? response : "Cannot get products",
+        });
+      })
+      .catch((err) => {
+        return res.status(401).json({ success: false, message: err.message });
+      });
   } catch (error) {
     res.status(500).json({
       success: false,

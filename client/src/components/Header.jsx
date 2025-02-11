@@ -37,7 +37,7 @@ const Header = () => {
             </div>
             <Link
               to={
-                +current?.role === 8386
+                current?.role === "admin"
                   ? `/${path.ADMIN}/${path.DASHBOARD}`
                   : `/${path.MEMBER}/${path.PERSONAL}`
               }
