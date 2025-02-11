@@ -28,3 +28,4 @@ export { default as Comment } from "./Comment";
 export { default as Pagination } from "./Pagination";
 export { default as PaginationItem } from "./PaginationItem";
 export { default as Loading } from "./Loading";
+export { default as AdminSidebar } from "./AdminSidebar";

@@ -1,7 +1,8 @@
-import { RiPhoneFill } from "react-icons/ri";
-import { MdEmail } from "react-icons/md";
+import { RiPhoneFill, RiBillLine } from "react-icons/ri";
+import { MdEmail, MdGroups } from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { BsHandbagFill } from "react-icons/bs";
+import { PiPackageLight } from "react-icons/pi";
 import {
   FaUserCircle,
   FaEye,
@@ -12,12 +13,18 @@ import {
   FaReply,
   FaTty,
 } from "react-icons/fa";
-import { IoIosArrowForward, IoIosLogOut, IoIosArrowDown } from "react-icons/io";
+import {
+  IoIosArrowForward,
+  IoIosLogOut,
+  IoIosArrowDown,
+  IoIosArrowUp,
+} from "react-icons/io";
 import {
   AiFillHome,
   AiFillStar,
   AiOutlineStar,
   AiOutlineMenu,
+  AiOutlineDashboard,
 } from "react-icons/ai";
 
 const icons = {
@@ -40,6 +47,11 @@ const icons = {
   FaTty,
   IoIosArrowDown,
   BiDotsHorizontalRounded,
+  AiOutlineDashboard,
+  MdGroups,
+  PiPackageLight,
+  RiBillLine,
+  IoIosArrowUp,
 };
 
 export default icons;

@@ -116,6 +116,7 @@ export const productInfoTabs = [
   },
 ];
 
+//
 export const colors = [
   "black",
   "brown",
@@ -129,6 +130,7 @@ export const colors = [
   "blue",
 ];
 
+//
 export const sorts = [
   {
     id: 1,
@@ -167,10 +169,50 @@ export const sorts = [
   },
 ];
 
+//
 export const voteOptions = [
   { id: 1, text: "Terrible" },
   { id: 2, text: "Bad" },
   { id: 3, text: "Neutral" },
   { id: 4, text: "Good" },
   { id: 5, text: "Perfect" },
+];
+
+//
+const { AiOutlineDashboard, MdGroups, PiPackageLight, RiBillLine } = icons;
+export const adminSidebar = [
+  {
+    id: 1,
+    type: "SINGLE",
+    text: "Dashboard",
+    path: `/${path.ADMIN}/${path.DASHBOARD}`,
+    icon: <AiOutlineDashboard size={20} />,
+  },
+  {
+    id: 2,
+    type: "SINGLE",
+    text: "Manage users",
+    path: `/${path.ADMIN}/${path.MANAGE_USER}`,
+    icon: <MdGroups size={20} />,
+  },
+  {
+    id: 3,
+    type: "PARENT",
+    text: "Manage product",
+    icon: <PiPackageLight size={20} />,
+    submenu: [
+      { text: "Create product", path: `/${path.ADMIN}/${path.CREATE_PRODUCT}` },
+      {
+        text: "Manage products",
+        path: `/${path.ADMIN}/${path.MANAGE_PRODUCT}`,
+      },
+    ],
+  },
+  {
+    id: 4,
+    type: "SINGLE",
+    text: "Manage order",
+    path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
+    icon: <RiBillLine size={20} />,
+  },
 ];
