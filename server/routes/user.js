@@ -30,7 +30,7 @@ router.post("/forgotpassword", ctrls.forgotPassword);
 router.put("/resetpassword", ctrls.resetPassword);
 
 //DELETE USER
-router.delete("/", [verifyAccessToken, isAdmin], ctrls.deleteUser);
+router.delete("/:uid", [verifyAccessToken, isAdmin], ctrls.deleteUser);
 
 //UPDATE USER
 router.put("/current", verifyAccessToken, ctrls.updateUser);
@@ -42,6 +42,6 @@ router.put("/address", [verifyAccessToken], ctrls.updateUserAddress);
 router.put("/cart", [verifyAccessToken], ctrls.updateCart);
 
 //UPDATE USER BY ADMIN
-router.put("/:uid", [verifyAccessToken, isAdmin], ctrls.updateUser);
+router.put("/:uid", [verifyAccessToken, isAdmin], ctrls.updateUserByAdmin);
 
 module.exports = router;

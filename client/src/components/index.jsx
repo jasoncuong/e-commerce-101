@@ -29,3 +29,5 @@ export { default as Pagination } from "./Pagination";
 export { default as PaginationItem } from "./PaginationItem";
 export { default as Loading } from "./Loading";
 export { default as AdminSidebar } from "./AdminSidebar";
+export { default as InputForm } from "./InputForm";
+export { default as Select } from "./Select";

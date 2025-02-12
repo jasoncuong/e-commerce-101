@@ -430,17 +430,17 @@ const resetPassword = async (req, res) => {
 //DELETE USER
 const deleteUser = async (req, res) => {
   try {
-    const { _id } = req.query;
+    const { uid } = req.params;
 
-    if (!_id) {
+    if (!uid) {
       return res
         .status(401)
         .json({ success: false, message: "Missing inputs" });
     }
-    const response = await User.findByIdAndDelete(_id);
+    const response = await User.findByIdAndDelete(uid);
     return res.status(200).json({
       success: response ? true : false,
-      deletedUser: response
+      message: response
         ? `User with email ${response.email} deleted`
         : `No user deleted`,
     });
@@ -490,7 +490,7 @@ const updateUserByAdmin = async (req, res) => {
     }).select("-password -role -refreshToken");
     return res.status(200).json({
       success: response ? true : false,
-      updatedUser: response ? response : "Updated failed!",
+      message: response ? "Updated successfully!" : "Updated failed!",
     });
   } catch (error) {
     res.status(500).json({
