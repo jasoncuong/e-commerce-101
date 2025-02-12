@@ -13,6 +13,8 @@ import { useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { blockStatus, roles } from "../../utils/contants";
+import clsx from "clsx";
 
 const ManageUser = () => {
   const {
@@ -25,7 +27,7 @@ const ManageUser = () => {
     lastname: "",
     role: "",
     mobile: "",
-    status: "",
+    isBlocked: "",
   });
   const [users, setUsers] = useState(null);
   const [queries, setQueries] = useState({
@@ -86,7 +88,7 @@ const ManageUser = () => {
   };
 
   return (
-    <div className="w-full pl-8">
+    <div className={clsx("w-full", editElm && "pl-16")}>
       <h1 className="flex h-[75px] items-center justify-between border-b px-4 text-3xl font-bold">
         <span>Manage users</span>
       </h1>
@@ -192,16 +194,32 @@ const ManageUser = () => {
                   </td>
                   <td className="px-4 py-2">
                     {editElm?._id === el._id ? (
-                      <Select />
+                      <Select
+                        register={register}
+                        defaultValue={el.role}
+                        fullWidth
+                        errors={errors}
+                        id={"role"}
+                        validate={{ required: "Require fill." }}
+                        options={roles}
+                      />
                     ) : (
                       <span>{el.role}</span>
                     )}
                   </td>
                   <td className="px-4 py-2">
                     {editElm?._id === el._id ? (
-                      <Select />
+                      <Select
+                        register={register}
+                        defaultValue={el.isBlocked}
+                        fullWidth
+                        errors={errors}
+                        id={"isBlocked"}
+                        validate={{ required: "Require fill." }}
+                        options={blockStatus}
+                      />
                     ) : (
-                      <span> {el.isBlocked ? "Block" : "Active"}</span>
+                      <span>{el.isBlocked ? "Blocked" : "Active"}</span>
                     )}
                   </td>
                   <td className="px-4 py-2">

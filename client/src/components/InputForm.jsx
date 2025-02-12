@@ -22,7 +22,10 @@ const InputForm = ({
         {...register(id, validate)}
         disabled={disabled}
         placeholder={placeholder}
-        className={clsx("form-input text-gray-900", fullWidth && "w-full")}
+        className={clsx(
+          "form-input my-auto text-gray-900",
+          fullWidth && "w-full",
+        )}
         defaultValue={defaultValue}
       />
       {errors[id] && (
